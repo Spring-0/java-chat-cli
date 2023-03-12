@@ -1,5 +1,6 @@
 package chatapplication.common.models;
 
+import chatapplication.server.database.DatabaseManager;
 import chatapplication.server.networking.RequestHandler;
 
 import java.net.Inet4Address;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 
 public class User {
 
-    int userID;
+    private int userID;
     private String username;
     private String email;
     private ArrayList<String> chatHistory;
@@ -17,8 +18,10 @@ public class User {
     private RequestHandler handler;
     private Socket socket;
     private boolean loggedIn;
-    public User(){
 
+    private DatabaseManager dbManager = new DatabaseManager();
+
+    public User(){
     }
 
     public User(String username, String passwd){
@@ -36,13 +39,16 @@ public class User {
         this.handler = handler;
     }
 
-
     public void setUsername(String username){
         this.username = username;
     }
 
     public void setPasswd(String passwd){
         this.password = passwd;
+    }
+
+    public String getPasswd(){
+        return this.password;
     }
 
 
@@ -89,5 +95,10 @@ public class User {
     public Boolean isLoggedIn(){
         return this.loggedIn;
     }
+
+    public int getUserID(){
+        return this.userID;
+    }
+
 
 }

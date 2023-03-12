@@ -19,10 +19,11 @@ public class IoUtil {
         out.println(prompt);
         return in.readLine();
     }
-
     public void displayWelcomeScreen(){
         out.println("Welcome to Spring's chat application!");
     }
 
-
+    public void displayRegisterScreen(){
+        out.println("Please register.");
+    }
 }

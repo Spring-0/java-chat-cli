@@ -30,17 +30,12 @@ public class Chat {
     }
 
 
-    private void createChat(){
-
-    }
-
-
     // Update the chat name
     public void setChatName(String chatName){
         this.chatName = chatName;
     }
 
-    // Will delete messages from a chat if this is true
+    // Will delete messages from a chat after a set time if this is true
     public void setExpireMessages(boolean expireMessages){
         this.expireMessages = expireMessages;
     }

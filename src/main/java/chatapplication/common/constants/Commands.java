@@ -6,7 +6,6 @@ public class Commands {
 
     private User user;
 
-
     public Commands(User user){
         this.user = user;
     }
@@ -15,7 +14,6 @@ public class Commands {
         Validate & call the appropriate command
      */
     public void callCommand(String cmd){
-        // Get the name of the command
         String[] splitCmd = cmd.split(" ");
 
         switch(splitCmd[0].toLowerCase()){
@@ -31,7 +29,6 @@ public class Commands {
                 if(splitCmd.length == 3){
                     // TODO: Get user by id and send them a private message
                 }
-
                 break;
             case "/help":
                 displayHelpMenu();
@@ -40,6 +37,9 @@ public class Commands {
                 if(splitCmd.length == 2){
                     changePasswd(splitCmd[1]);
                 }
+                break;
+            case "/userid":
+                getUserID();
                 break;
             default:
                 System.out.println("That is not a valid command, please refer to /help");
@@ -67,6 +67,10 @@ public class Commands {
 
     private void changePasswd(String newPassword){
         user.setPasswd(newPassword);
+    }
+
+    private void getUserID(){
+        user.getHandler().broadcast(Integer.toString(user.getUserID()));
     }
 
 }

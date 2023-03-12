@@ -22,6 +22,7 @@ public class Client implements Runnable{
     @Override
     public void run() {
         try {
+
             client = new Socket("localhost", 8888);
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
             out = new PrintWriter(client.getOutputStream(), true);
@@ -35,7 +36,8 @@ public class Client implements Runnable{
             }
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("There was an error connecting to the server, please ensure the server is online.");
+            // throw new RuntimeException(e);
         }
     }
     class InputHandler implements Runnable{
