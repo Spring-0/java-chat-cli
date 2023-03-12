@@ -6,8 +6,8 @@ import java.io.PrintWriter;
 
 public class IoUtil {
 
-    private BufferedReader in;
-    private PrintWriter out;
+    private final BufferedReader in;
+    private final PrintWriter out;
 
     public IoUtil(BufferedReader in, PrintWriter out){
         this.in = in;

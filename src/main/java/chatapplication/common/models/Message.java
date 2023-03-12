@@ -12,7 +12,7 @@ public class Message {
 
 
     private boolean messageExists(){
-        // TODO: Return bool on message existance
+        // TODO: Return bool on message existence
         return false;
     }
 

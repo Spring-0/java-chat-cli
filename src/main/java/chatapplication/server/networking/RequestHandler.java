@@ -5,7 +5,6 @@ import chatapplication.common.constants.util.IoUtil;
 import chatapplication.common.models.User;
 import chatapplication.server.UserAuth;
 import chatapplication.server.database.DatabaseManager;
-import com.mysql.cj.xdevapi.DbDoc;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,7 +20,7 @@ public class RequestHandler implements Runnable{
     public RequestHandler(){
     }
 
-    private DatabaseManager dbManager = new DatabaseManager();
+    private final DatabaseManager dbManager = new DatabaseManager();
 
     public void setUser(User user){
         this.user = user;
@@ -61,27 +60,28 @@ public class RequestHandler implements Runnable{
             // Display welcome screen
             ioUtil.displayWelcomeScreen();
 
-            // Prompt user for username and password
-            username = ioUtil.prompt("Enter username: ");
-            password = ioUtil.prompt("Enter password: ");
+            while(!user.isLoggedIn()){
+                // Prompt user for username and password
+                username = ioUtil.prompt("Enter username: ");
+                password = ioUtil.prompt("Enter password: ");
 
 
-            if(!dbManager.isReturningUser(username)){
-                // Set user details
-                user.setUsername(username);
-                user.setPasswd(password);
-                dbManager.createUserEntry(user);
-                out.println("Successfully registered a new account.");
-            } else if(dbManager.authenticate(username, password)){
-                out.println("Successfully Logged in.");
-                user.setUsername(username);
-                // TODO: Set id
-            } else {
-                out.println("Invalid username or password.");
+                if(!dbManager.isReturningUser(username)){
+                    // Set user details
+                    user.setUsername(username);
+                    user.setPasswd(password);
+                    dbManager.createUserEntry(user);
+                    out.println("Successfully registered a new account.");
+                    user.setLoggedIn(true);
+                } else if(dbManager.authenticate(username, password)){
+                    user.setLoggedIn(true);
+                    out.println("Successfully Logged in.");
+                    user.setUsername(username);
+                    // TODO: Set id
+                } else {
+                    out.println("Invalid username or password.");
+                }
             }
-
-            user.setLoggedIn(true);
-
 
             commands = new Commands(user);
 

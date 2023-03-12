@@ -19,8 +19,6 @@ public class User {
     private Socket socket;
     private boolean loggedIn;
 
-    private DatabaseManager dbManager = new DatabaseManager();
-
     public User(){
     }
 

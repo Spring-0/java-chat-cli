@@ -1,22 +1,17 @@
 package chatapplication.server.database;
 
 import chatapplication.common.models.User;
-
 import java.sql.*;
-import java.util.Arrays;
 
 public class DatabaseManager {
 
-    private Connection dbConnection;
-    private Statement stmt;
-
-    private final String QUERY = "SELECT * FROM Users WHERE user_id == '%s'";
-    private final String INSERT = "INSERT INTO Users(username, password) VALUES('%s', '%s')";
+    private final Connection DB_CONNECTION;
+    private final Statement STMT;
 
     public DatabaseManager(){
-        dbConnection = DatabaseConnection.getInstance().getConnection();
+        DB_CONNECTION = DatabaseConnection.getInstance().getConnection();
         try {
-            this.stmt = dbConnection.createStatement();
+            this.STMT = DB_CONNECTION.createStatement();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -26,7 +21,7 @@ public class DatabaseManager {
     // Check if user is already registered
     public boolean isReturningUser(String username) {
         try {
-            PreparedStatement ps = dbConnection.prepareStatement("SELECT * FROM Users WHERE username = ?;");
+            PreparedStatement ps = DB_CONNECTION.prepareStatement("SELECT * FROM Users WHERE username = ?;");
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -43,7 +38,7 @@ public class DatabaseManager {
     public void createUserEntry(User user){
         try{
             // TODO: Encrypt passwords
-            stmt.execute(String.format("INSERT INTO Users(username, password) VALUES('%s', '%s')", user.getUsername(), user.getPasswd()));
+            STMT.execute(String.format("INSERT INTO Users(username, password) VALUES('%s', '%s')", user.getUsername(), user.getPasswd()));
         } catch (SQLException e){
             System.out.println("There was an error adding user: " + user.getUserID() + " to the database.");
             e.printStackTrace();
@@ -56,7 +51,7 @@ public class DatabaseManager {
     public boolean authenticate(String username, String passwd){
         try {
             String sql = "SELECT * FROM Users WHERE username = ? AND password = ?;";
-            PreparedStatement preparedStatement = dbConnection.prepareStatement(sql);
+            PreparedStatement preparedStatement = DB_CONNECTION.prepareStatement(sql);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, passwd);
             ResultSet resultSet = preparedStatement.executeQuery();

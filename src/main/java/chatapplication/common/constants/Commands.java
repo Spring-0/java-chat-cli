@@ -4,10 +4,10 @@ import chatapplication.common.models.User;
 
 public class Commands {
 
-    private User user;
+    private final User USER;
 
     public Commands(User user){
-        this.user = user;
+        this.USER = user;
     }
 
     /*
@@ -49,8 +49,13 @@ public class Commands {
 
     // Change the username
     private void changeNick(String newUsername){
-        user.getHandler().broadcast(String.format("'%s' has changed their username to --> '%s'", user.getUsername(), newUsername));
-        user.setUsername(newUsername);
+        final String CHANGE_NICK_MESSAGE = String.format("'%s' has changed their username to --> '%s'", USER.getUsername(), newUsername);
+
+        // Log event to server console
+        System.out.println(CHANGE_NICK_MESSAGE);
+
+        USER.getHandler().broadcast(CHANGE_NICK_MESSAGE);
+        USER.setUsername(newUsername);
     }
 
     private void quit(){
@@ -66,11 +71,11 @@ public class Commands {
     }
 
     private void changePasswd(String newPassword){
-        user.setPasswd(newPassword);
+        USER.setPasswd(newPassword);
     }
 
     private void getUserID(){
-        user.getHandler().broadcast(Integer.toString(user.getUserID()));
+        USER.getHandler().broadcast(Integer.toString(USER.getUserID()));
     }
 
 }
