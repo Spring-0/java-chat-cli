@@ -49,7 +49,6 @@ public class RequestHandler implements Runnable{
         String password; // TODO: Encrypt
 
         Commands commands;
-        UserAuth auth = new UserAuth();
         IoUtil ioUtil;
 
         try{
@@ -88,6 +87,7 @@ public class RequestHandler implements Runnable{
             broadcast(user.getUsername() + " has joined the chat application!");
 
             while((userInput = in.readLine()) != null) {
+
                 if(!userInput.startsWith("/")){
                     broadcast(String.format("%s: %s", user.getUsername(), userInput));
                 } else{

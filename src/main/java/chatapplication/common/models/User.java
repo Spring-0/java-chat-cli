@@ -18,20 +18,15 @@ public class User {
     private RequestHandler handler;
     private Socket socket;
     private boolean loggedIn;
-
+    private ArrayList<Chat> openChats;
     public User(){
+        openChats = new ArrayList<>();
     }
 
     public User(String username, String passwd){
         this.username = username;
         this.password = passwd;
     }
-
-
-    public void privateMessage(String message){
-        // TODO: Send a message
-    }
-
 
     public void setHandler(RequestHandler handler){
         this.handler = handler;
@@ -97,6 +92,8 @@ public class User {
     public int getUserID(){
         return this.userID;
     }
-
+    public ArrayList<Chat> getOpenChats(){
+        return openChats;
+    }
 
 }

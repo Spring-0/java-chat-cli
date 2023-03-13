@@ -19,7 +19,7 @@ public class DatabaseConnection {
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             this.conn = DriverManager.getConnection(String.format("jdbc:mysql://localhost:%d/%s?user=%s&password=%s", DB_PORT, DB_NAME, DB_USERNAME, DB_PASSWORD));
-            System.out.println("Created conn");
+            System.out.println("Created database connection.");
         } catch(ClassNotFoundException | SQLException e){
             e.printStackTrace();
         }

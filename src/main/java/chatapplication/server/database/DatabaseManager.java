@@ -61,4 +61,25 @@ public class DatabaseManager {
         }
         return false;
     }
+
+    // Update user username
+    public void updateUsername(String username, String newUsername){
+        try{
+            final String UPDATE = "Update users SET username = '%s' WHERE username = '%s'";
+            STMT.execute(String.format(UPDATE, newUsername, username));
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    // Update user passwd
+    public void updatePassword(String username, String passwd){
+        try {
+            final String UPDATE = "UPDATE users SET password = '%s' WHERE username = '%s'";
+            STMT.execute(String.format(UPDATE, passwd, username));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

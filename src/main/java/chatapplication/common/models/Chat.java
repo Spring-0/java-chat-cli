@@ -6,27 +6,21 @@ import java.util.Date;
 
 public class Chat {
 
-    private int[] userMembers;
+    private User sender;
+    private User reciever;
     private boolean expireMessages = false;
     private String chatName = "";
-    private Date creationDate;
-
-    public Chat(){}
 
 
-    public Chat(int[] userMembers){
-        User user = new User();
+    public Chat(User sender, User reciever){
+        this.sender = sender;
+        this.reciever = reciever;
+    }
 
-        this.userMembers = userMembers;
 
-        // Set the chat name to the list of usernames
-        for(int userID : this.userMembers){
-            this.chatName +=  user.getUsernameFromID(1) + ", ";
-        }
-
-        // Create timestamp of creation date
-        // TODO: Implement timestamp
-
+    public void sendPrivateDM(String message){
+        this.sender.getHandler().sendMessage(String.format("[Private Message] %s --> %s: %s", sender.getUsername(), reciever.getUsername(), message));
+        this.reciever.getHandler().sendMessage(String.format("[Private Message] %s --> %s: %s", sender.getUsername(), reciever.getUsername(), message));
     }
 
 
