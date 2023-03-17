@@ -1,31 +1,30 @@
 package chatapplication.common.models;
 
-import chatapplication.server.database.DatabaseManager;
+import chatapplication.server.ChatRoomType;
 import chatapplication.server.networking.RequestHandler;
 
-import java.net.Inet4Address;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class User {
 
     private int userID;
     private String username;
-    private String email;
-    private ArrayList<String> chatHistory;
     private String password;
-    private Inet4Address ipAddress;
+    private ChatRoomType chatRoomType = ChatRoomType.GLOBAL;
     private RequestHandler handler;
     private Socket socket;
     private boolean loggedIn;
-    private ArrayList<Chat> openChats;
-    public User(){
-        openChats = new ArrayList<>();
-    }
+    private GroupChat currentGroupChat;
+    private ArrayList<GroupChat> groupChats;
 
-    public User(String username, String passwd){
-        this.username = username;
-        this.password = passwd;
+    // Map username to User object
+    private static Map<String, User> userMap = new HashMap<>();
+
+    public User(){
+        groupChats = new ArrayList<>();
     }
 
     public void setHandler(RequestHandler handler){
@@ -34,6 +33,15 @@ public class User {
 
     public void setUsername(String username){
         this.username = username;
+        userMap.put(username.toLowerCase(), this);
+    }
+
+    public void changeUsername(String username){
+        // Remove old mapping
+        userMap.remove(this.username);
+
+        // Set new username and add mapping
+        setUsername(username);
     }
 
     public void setPasswd(String passwd){
@@ -57,16 +65,13 @@ public class User {
         this.socket = socket;
     }
 
-    public String getUsernameFromID(int userID){
-        return "";
+    public void setCurrentGroupChat(GroupChat currentGroupChat){
+        this.currentGroupChat = currentGroupChat;
     }
 
-
-    // Set or update the user ip
-    public void setIpAddress(Inet4Address ip){
-        this.ipAddress = ip;
+    public GroupChat getCurrentGroupChat(){
+        return this.currentGroupChat;
     }
-
 
     public String[] getFriendList(){
         // TODO: Return array of friend list
@@ -77,8 +82,11 @@ public class User {
         return this.username;
     }
 
-    public ArrayList<String> getChatHistory(){
-        return chatHistory;
+    public void setChatRoomType(ChatRoomType chatRoomType){
+        this.chatRoomType = chatRoomType;
+    }
+    public ChatRoomType getChatRoomType(){
+        return this.chatRoomType;
     }
 
     public void setLoggedIn(boolean bool){
@@ -92,8 +100,19 @@ public class User {
     public int getUserID(){
         return this.userID;
     }
-    public ArrayList<Chat> getOpenChats(){
-        return openChats;
+
+    public void setUserID(int userID){
+        this.userID = userID;
+    }
+
+    public ArrayList<GroupChat> getGroupChats(){
+        return groupChats;
+    }
+
+
+
+    public static User getUserByUsername(String username){
+        return userMap.get(username.toLowerCase());
     }
 
 }

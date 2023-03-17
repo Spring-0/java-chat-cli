@@ -46,6 +46,11 @@ public class DatabaseManager {
 
     }
 
+    // TODO: Add groupchat to database with it's members
+    public void addGroupChat(String groupName){
+
+    }
+
 
     // Authenticate user credentials in database
     public boolean authenticate(String username, String passwd){
@@ -60,6 +65,21 @@ public class DatabaseManager {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public int getUserID(String username){
+        try{
+
+            String sql = "SELECT * FROM Users WHERE username = ?";
+            PreparedStatement preparedStatement = DB_CONNECTION.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.getInt(0);
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     // Update user username

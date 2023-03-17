@@ -1,38 +1,24 @@
 package chatapplication.common.models;
 
-import chatapplication.common.models.User;
-
-import java.util.Date;
-
 public class Chat {
 
     private User sender;
-    private User reciever;
+    private User receiver;
     private boolean expireMessages = false;
     private String chatName = "";
 
 
-    public Chat(User sender, User reciever){
+    public Chat(){}
+
+    public Chat(User sender, User receiver){
         this.sender = sender;
-        this.reciever = reciever;
+        this.receiver = receiver;
     }
 
 
     public void sendPrivateDM(String message){
-        this.sender.getHandler().sendMessage(String.format("[Private Message] %s --> %s: %s", sender.getUsername(), reciever.getUsername(), message));
-        this.reciever.getHandler().sendMessage(String.format("[Private Message] %s --> %s: %s", sender.getUsername(), reciever.getUsername(), message));
+        this.sender.getHandler().sendMessage(String.format("[Private Message] %s --> %s: %s", sender.getUsername(), receiver.getUsername(), message));
+        this.receiver.getHandler().sendMessage(String.format("[Private Message] %s --> %s: %s", sender.getUsername(), receiver.getUsername(), message));
     }
-
-
-    // Update the chat name
-    public void setChatName(String chatName){
-        this.chatName = chatName;
-    }
-
-    // Will delete messages from a chat after a set time if this is true
-    public void setExpireMessages(boolean expireMessages){
-        this.expireMessages = expireMessages;
-    }
-
 
 }

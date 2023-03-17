@@ -2,8 +2,9 @@ package chatapplication.server.networking;
 
 import chatapplication.common.constants.Commands;
 import chatapplication.common.constants.util.IoUtil;
+import chatapplication.common.models.GroupChat;
 import chatapplication.common.models.User;
-import chatapplication.server.UserAuth;
+import chatapplication.server.ChatRoomType;
 import chatapplication.server.database.DatabaseManager;
 
 import java.io.BufferedReader;
@@ -17,17 +18,22 @@ public class RequestHandler implements Runnable{
     private PrintWriter out;
     private User user;
 
-    public RequestHandler(){
+    public RequestHandler(User user){
+        this.user = user;
     }
 
     private final DatabaseManager dbManager = new DatabaseManager();
 
-    public void setUser(User user){
-        this.user = user;
-    }
-
     public void sendMessage(String msg){
         out.println(msg);
+    }
+
+    public String getUserInput(){
+        try {
+            return in.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void broadcast(String msg){
@@ -65,20 +71,26 @@ public class RequestHandler implements Runnable{
                 password = ioUtil.prompt("Enter password: ");
 
 
-                if(!dbManager.isReturningUser(username)){
-                    // Set user details
+                if (dbManager.isReturningUser(username)) {
+                    if (dbManager.authenticate(username, password)) {
+                        // User is returning and authenticated successfully
+                        out.println("Successfully logged in.");
+                        user.setLoggedIn(true);
+                        user.setUsername(username);
+                        user.setUserID(dbManager.getUserID(username));
+                        // TODO: Set id
+                    } else {
+                        // User is returning but authentication failed
+                        out.println("Invalid username or password.");
+                    }
+                } else {
+                    // User is new
                     user.setUsername(username);
                     user.setPasswd(password);
                     dbManager.createUserEntry(user);
+                    user.setUserID(dbManager.getUserID(username));
                     out.println("Successfully registered a new account.");
                     user.setLoggedIn(true);
-                } else if(dbManager.authenticate(username, password)){
-                    user.setLoggedIn(true);
-                    out.println("Successfully Logged in.");
-                    user.setUsername(username);
-                    // TODO: Set id
-                } else {
-                    out.println("Invalid username or password.");
                 }
             }
 
@@ -89,10 +101,17 @@ public class RequestHandler implements Runnable{
             while((userInput = in.readLine()) != null) {
 
                 if(!userInput.startsWith("/")){
-                    broadcast(String.format("%s: %s", user.getUsername(), userInput));
+
+                    if(user.getChatRoomType() == ChatRoomType.GROUP_CHAT){
+                        GroupChat currentGroupChat = user.getCurrentGroupChat();
+                        currentGroupChat.broadcast(user, userInput);
+                    } else if (user.getChatRoomType() == ChatRoomType.GLOBAL) {
+                        broadcast(String.format("[Global] %s: %s", user.getUsername(), userInput));
+                    }
                 } else{
                     commands.callCommand(userInput);
                 }
+
             }
 
         } catch(IOException e){

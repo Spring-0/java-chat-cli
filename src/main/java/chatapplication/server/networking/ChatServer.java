@@ -31,14 +31,11 @@ public class ChatServer implements Runnable {
             while(true) {
                 Socket userSocket = server.accept();
 
-                RequestHandler handler = new RequestHandler();
-
                 user = new User();
+                RequestHandler handler = new RequestHandler(user);
 
                 user.setSocket(userSocket);
                 user.setHandler(handler);
-                handler.setUser(user);
-
                 users.add(user);
 
                 pool.execute(handler);
