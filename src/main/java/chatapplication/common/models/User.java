@@ -108,7 +108,9 @@ public class User {
     public ArrayList<GroupChat> getGroupChats(){
         return groupChats;
     }
-
+    public void setGroupChats(ArrayList<GroupChat> groupChats){
+        this.groupChats = groupChats;
+    }
 
 
     public static User getUserByUsername(String username){
