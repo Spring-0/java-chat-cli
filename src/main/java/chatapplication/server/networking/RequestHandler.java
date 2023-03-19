@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 public class RequestHandler implements Runnable{
 
@@ -78,7 +79,14 @@ public class RequestHandler implements Runnable{
                         user.setLoggedIn(true);
                         user.setUsername(username);
                         user.setUserID(dbManager.getUserID(username));
-                        // TODO: Set id
+
+                        ArrayList<GroupChat> groupChats = dbManager.getGroupChatsByUser(user);
+                        user.setGroupChats(groupChats);
+
+
+                        // Debug Purposes
+                        System.out.println(user.getGroupChats().toString());
+
                     } else {
                         // User is returning but authentication failed
                         out.println("Invalid username or password.");
