@@ -22,15 +22,11 @@ public class GroupChat extends Chat {
                 user.getGroupChats().add(this);
             }
         }
-        groupNameBuilder.append("group");
-        this.groupName = groupNameBuilder.toString();
     }
 
     public void addUserToGroup(User user){
         this.receivers.add(user);
         user.getGroupChats().add(this);
-        groupNameBuilder.append(user.getUsername() + " ");
-        this.groupName = groupNameBuilder.toString();
     }
 
     public String getGroupName(){
