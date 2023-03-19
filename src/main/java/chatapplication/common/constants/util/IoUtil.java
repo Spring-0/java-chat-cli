@@ -26,11 +26,10 @@ public class IoUtil {
     public static String groupChatsToString(ArrayList<GroupChat> groupChats){
         StringBuilder stringBuilder = new StringBuilder();
 
-        for(int i = 1; i <= groupChats.size(); i++){
-            stringBuilder.append(i + ") " + groupChats.get(i-1).getGroupName() + "\n");
+        for(int i = 0; i < groupChats.size(); i++){
+            stringBuilder.append((i + 1) + ") " + groupChats.get(i).getGroupName() + "\n");
         }
         return stringBuilder.toString();
-
     }
 
 
