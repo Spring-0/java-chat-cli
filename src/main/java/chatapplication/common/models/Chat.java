@@ -4,8 +4,6 @@ public class Chat {
 
     private User sender;
     private User receiver;
-    private boolean expireMessages = false;
-    private String chatName = "";
 
 
     public Chat(){}
