@@ -18,8 +18,9 @@ public class GroupChat extends Chat {
         this.groupID = lastAssignedID++;
 
         for(User user : receivers){
-            groupNameBuilder.append(user.getUsername() + ", ");
-            user.getGroupChats().add(this);
+            if(user != null){
+                user.getGroupChats().add(this);
+            }
         }
         groupNameBuilder.append("group");
         this.groupName = groupNameBuilder.toString();
@@ -39,7 +40,10 @@ public class GroupChat extends Chat {
 
     public void broadcast(User sender, String message){
         for(User user : receivers){
-            user.getHandler().sendMessage(String.format("[%s] %s: %s", groupName, sender.getUsername(), message));
+            System.out.println(sender.equals(user));
+            if(user != null){
+                user.getHandler().sendMessage(String.format("[%s] %s: %s", groupName, sender.getUsername(), message));
+            }
         }
     }
 
