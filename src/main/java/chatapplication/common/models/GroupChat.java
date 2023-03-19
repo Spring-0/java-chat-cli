@@ -8,12 +8,14 @@ public class GroupChat extends Chat {
 
     private ArrayList<User> receivers;
     private String groupName;
-    private StringBuilder groupNameBuilder = new StringBuilder();
+    private int groupID;
     private User groupChatOwner;
+    private static int lastAssignedID = 1;
 
     public GroupChat(ArrayList<User> receivers) {
         this.receivers = receivers;
         this.groupChatOwner = receivers.get(0); // Set groupchat owner
+        this.groupID = lastAssignedID++;
 
         for(User user : receivers){
             groupNameBuilder.append(user.getUsername() + ", ");
@@ -55,5 +57,16 @@ public class GroupChat extends Chat {
         return this.groupName;
     }
 
+    public void setGroupID(int id){
+        this.groupID = id;
+    }
+
+    public int getGroupID(){
+        return this.groupID;
+    }
+
+    public ArrayList<User> getReceivers(){
+        return this.receivers;
+    }
 
 }
