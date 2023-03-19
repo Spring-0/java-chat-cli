@@ -16,12 +16,19 @@ import java.util.Arrays;
 
 public class Commands {
 
-    private final User USER;
+    private User USER;
 
     public Commands(User user){
         this.USER = user;
     }
+
     final static DatabaseManager DB_MANAGER = new DatabaseManager();
+
+
+    public void setUser(User user){
+        this.USER = user;
+        System.out.println("USERNAME: " + USER.getUsername() + " " + USER.getGroupChats());
+    }
 
     /*
         Validate & call the appropriate command
@@ -82,7 +89,7 @@ public class Commands {
                 }
                 break;
 
-            case "/userid":
+            case "/myid":
                 getUserID();
                 break;
 
@@ -99,23 +106,36 @@ public class Commands {
                         if(groupChats.size() == 0){
                             USER.getHandler().sendMessage("You do not have any group chats.");
                         } else{
+                            User addedUser = User.getUserByUsername(splitCmd[2]);
+                            if(addedUser == null){
+                                USER.getHandler().sendMessage("This user is not online or invalid.");
+                                break;
+                            }
                             USER.getHandler().sendMessage("Select a group chat to add the user to.\n" + IoUtil.groupChatsToString(groupChats));
                             int groupChatIndex = Integer.parseInt(USER.getHandler().getUserInput());
-                            User addedUser = User.getUserByUsername(splitCmd[2]);
                             GroupChat gc = groupChats.get(groupChatIndex - 1);
+                            System.out.println("Name: " + gc.getGroupName() + "\nID: " + gc.getGroupID());
                             gc.addUserToGroup(addedUser);
+                            DB_MANAGER.addUserToGroup(addedUser, gc);
                             addedUser.getHandler().sendMessage("You have been added to the " + gc.getGroupName() + " group chat.");
                             USER.getHandler().sendMessage("You have successfully added " + addedUser.getUsername() + " to the group chat.");
                         }
 
                     // Create new group chat
                     } else if(splitCmd[1].equalsIgnoreCase("create")){
-                        createNewGroupChat(Arrays.copyOfRange(splitCmd, 1, splitCmd.length));
+                        String groupName;
+                        if(splitCmd.length > 2){
+                            groupName = String.join(" ", Arrays.copyOfRange(splitCmd, 2, splitCmd.length));
+                        } else{
+                            USER.getHandler().sendMessage("Please enter a name for the groupchat: ");
+                            groupName = USER.getHandler().getUserInput();
+                        }
+                        createNewGroupChat(Arrays.copyOfRange(splitCmd, 1, splitCmd.length), groupName);
                     }
 
                 // Switch to group chat
                 } else if (splitCmd.length == 1) {
-                    if(USER.getGroupChats().size() > 1){
+                    if(USER.getGroupChats().size() > 0){
                         USER.getHandler().sendMessage("Which groupchat would you like to switch into?\n" + IoUtil.groupChatsToString(USER.getGroupChats()));
                         int groupChatIndex = Integer.parseInt(USER.getHandler().getUserInput());
                         USER.setCurrentGroupChat(USER.getGroupChats().get(groupChatIndex-1));
@@ -217,7 +237,7 @@ public class Commands {
         }
     }
 
-    private void createNewGroupChat(String[] splitCmd){
+    private void createNewGroupChat(String[] splitCmd, String groupName){
         ArrayList<User> receivers = new ArrayList<>();
         receivers.add(USER);
 
@@ -234,6 +254,8 @@ public class Commands {
         }
 
         GroupChat groupChat = new GroupChat(receivers);
+        groupChat.setGroupName(groupName);
+        DB_MANAGER.addGroupChat(groupChat);
         USER.getHandler().sendMessage("Successfully created a new groupchat.");
 
     }
