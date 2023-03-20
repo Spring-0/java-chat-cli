@@ -268,18 +268,6 @@ public class Commands {
         ArrayList<User> receivers = new ArrayList<>();
         receivers.add(USER);
 
-        if(splitCmd.length > 2){
-            for(int i = 1; i < splitCmd.length; i++){
-                User user = User.getUserByUsername(splitCmd[i]);
-                if(user == null){
-                    USER.getHandler().sendMessage("Unable to find the user: " + splitCmd[i]);
-                    continue;
-                }
-                receivers.add(user);
-            }
-
-        }
-
         GroupChat groupChat = new GroupChat(receivers);
         groupChat.setGroupName(groupName);
         DB_MANAGER.addGroupChat(groupChat);
