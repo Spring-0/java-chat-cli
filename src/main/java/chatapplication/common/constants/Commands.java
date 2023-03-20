@@ -137,10 +137,21 @@ public class Commands {
                 } else if (splitCmd.length == 1) {
                     if(USER.getGroupChats().size() > 0){
                         USER.getHandler().sendMessage("Which groupchat would you like to switch into?\n" + IoUtil.groupChatsToString(USER.getGroupChats()));
-                        int groupChatIndex = Integer.parseInt(USER.getHandler().getUserInput());
-                        USER.setCurrentGroupChat(USER.getGroupChats().get(groupChatIndex-1));
-                        USER.setChatRoomType(ChatRoomType.GROUP_CHAT);
-                        USER.getHandler().sendMessage("You have switched to the group chat.");
+
+                        try{
+                            int groupChatIndex = Integer.parseInt(USER.getHandler().getUserInput());
+
+                            if(groupChatIndex > 0 && groupChatIndex <= USER.getGroupChats().size()){
+                                USER.setCurrentGroupChat(USER.getGroupChats().get(groupChatIndex-1));
+                                USER.setChatRoomType(ChatRoomType.GROUP_CHAT);
+                                USER.getHandler().sendMessage("You have switched to the group chat.");
+                            } else{
+                                USER.getHandler().sendMessage("Enter a number that is in the range.");
+                            }
+                        } catch (NumberFormatException ex){
+                            USER.getHandler().sendMessage("Input must be an integer.");
+                        }
+
                     } else{
                         USER.getHandler().sendMessage("You are not in any group chats.");
                     }
@@ -152,7 +163,18 @@ public class Commands {
                 if(splitCmd.length == 2){
                     currentGroupChat = USER.getCurrentGroupChat();
                     User kickedUser = User.getUserByUsername(splitCmd[1]);
-                    if(kickedUser.getGroupChats().contains(currentGroupChat)){
+
+                    if(kickedUser == null){
+                        USER.getHandler().sendMessage("Could not find that user.");
+                        break;
+                    }
+
+                    if(USER.getChatRoomType() == ChatRoomType.GLOBAL){
+                        USER.getHandler().sendMessage("You must be in a group chat to use this command.");
+                        break;
+                    }
+
+                    if(currentGroupChat.getReceivers().contains(kickedUser) && kickedUser.getGroupChats().contains(currentGroupChat)){
                         currentGroupChat.kickUser(kickedUser);
                         USER.getHandler().sendMessage(String.format("You have kicked '%s' from this group chat.", kickedUser.getUsername()));
                     } else{
