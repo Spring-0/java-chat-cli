@@ -21,10 +21,10 @@ public class RequestHandler implements Runnable{
 
     private BufferedReader in;
     private PrintWriter out;
-    private User user;
+    private final User USER;
 
     public RequestHandler(User user){
-        this.user = user;
+        this.USER = user;
     }
 
     private final DatabaseManager dbManager = new DatabaseManager();
@@ -63,33 +63,33 @@ public class RequestHandler implements Runnable{
         IoUtil ioUtil;
 
         try{
-            in = new BufferedReader(new InputStreamReader(user.getSocket().getInputStream()));
-            out = new PrintWriter(user.getSocket().getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(USER.getSocket().getInputStream()));
+            out = new PrintWriter(USER.getSocket().getOutputStream(), true);
             ioUtil = new IoUtil(in, out);
 
             // Display welcome screen
             ioUtil.displayWelcomeScreen();
 
-            while(!user.isLoggedIn()){
-                // Prompt user for username and password
+            while(!USER.isLoggedIn()){
+                // Prompt USER for username and password
                 username = ioUtil.prompt("Enter username: ");
                 password = ioUtil.prompt("Enter password: ");
 
 
-                if (dbManager.isReturningUser(username)) {
+                if (dbManager.usernameExists(username)) {
                     if (dbManager.authenticate(username, password)) {
                         // User is returning and authenticated successfully
                         out.println("Successfully logged in.");
-                        user.setLoggedIn(true);
-                        user.setUsername(username);
-                        user.setUserID(dbManager.getUserID(username));
+                        USER.setLoggedIn(true);
+                        USER.setUsername(username);
+                        USER.setUserID(dbManager.getUserID(username));
 
-                        ArrayList<GroupChat> groupChats = dbManager.getGroupChatsByUser(user);
-                        user.setGroupChats(groupChats);
+                        ArrayList<GroupChat> groupChats = dbManager.getGroupChatsByUser(USER);
+                        USER.setGroupChats(groupChats);
 
 
                         // Debug Purposes
-                        System.out.println(user.getGroupChats().toString());
+                        System.out.println(USER.getGroupChats().toString());
 
                     } else {
                         // User is returning but authentication failed
@@ -97,28 +97,28 @@ public class RequestHandler implements Runnable{
                     }
                 } else {
                     // User is new
-                    user.setUsername(username);
-                    user.setPasswd(password);
-                    dbManager.createUserEntry(user);
-                    user.setUserID(dbManager.getUserID(username));
+                    USER.setUsername(username);
+                    USER.setPasswd(password);
+                    dbManager.createUserEntry(USER);
+                    USER.setUserID(dbManager.getUserID(username));
                     out.println("Successfully registered a new account.");
-                    user.setLoggedIn(true);
+                    USER.setLoggedIn(true);
                 }
             }
 
-            commands = new Commands(user);
+            commands = new Commands(USER);
 
-            broadcast(user.getUsername() + " has joined the chat application!");
+            broadcast(USER.getUsername() + " has joined the chat application!");
 
             while((userInput = in.readLine()) != null) {
 
                 if(!userInput.startsWith("/")){
 
-                    if(user.getChatRoomType() == ChatRoomType.GROUP_CHAT){
-                        GroupChat currentGroupChat = user.getCurrentGroupChat();
-                        currentGroupChat.broadcast(user, userInput);
-                    } else if (user.getChatRoomType() == ChatRoomType.GLOBAL) {
-                        broadcast(String.format("[Global] %s: %s", user.getUsername(), userInput));
+                    if(USER.getChatRoomType() == ChatRoomType.GROUP_CHAT){
+                        GroupChat currentGroupChat = USER.getCurrentGroupChat();
+                        currentGroupChat.broadcast(USER, userInput);
+                    } else if (USER.getChatRoomType() == ChatRoomType.GLOBAL) {
+                        broadcast(String.format("[Global] %s: %s", USER.getUsername(), userInput));
                     }
                 } else{
                     commands.callCommand(userInput);
