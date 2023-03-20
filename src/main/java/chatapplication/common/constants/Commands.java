@@ -212,18 +212,23 @@ public class Commands {
         }
     }
 
-    // Change the username
-    // TODO: Prevent duplicate nicknames
+    // Change username
     private void changeNick(String newUsername){
         final String CHANGE_NICK_MESSAGE = String.format("'%s' has changed their username to --> '%s'", USER.getUsername(), newUsername);
 
-        DB_MANAGER.updateUsername(USER.getUsername(), newUsername);
+        if(!DB_MANAGER.usernameExists(newUsername.toLowerCase())){ // Check if username is taken
 
-        // Log event to server console
-        System.out.println(CHANGE_NICK_MESSAGE);
+            // Update username in db
+            DB_MANAGER.updateUsername(USER.getUsername(), newUsername.toLowerCase());
 
-        USER.getHandler().broadcast(CHANGE_NICK_MESSAGE);
-        USER.changeUsername(newUsername);
+            // Log event to server console
+            System.out.println(CHANGE_NICK_MESSAGE);
+
+            USER.getHandler().broadcast(CHANGE_NICK_MESSAGE);
+            USER.changeUsername(newUsername);
+        } else{
+            USER.getHandler().sendMessage(String.format("'%s' is already taken, select a different username.", newUsername));
+        }
 
     }
 
