@@ -27,7 +27,7 @@ public class DatabaseManager {
 
 
     // Check if user is already registered
-    public boolean isReturningUser(String username) {
+    public boolean usernameExists(String username) {
         try {
             PreparedStatement ps = DB_CONNECTION.prepareStatement("SELECT * FROM Users WHERE username = ?;");
             ps.setString(1, username.toLowerCase());
