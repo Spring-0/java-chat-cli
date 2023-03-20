@@ -13,6 +13,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+/*
+ * Handles client connections,
+ * responsible for user IO
+ */
 public class RequestHandler implements Runnable{
 
     private BufferedReader in;

@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/*
+ * Provides connection to MySQL database.
+ */
 public class DatabaseConnection {
 
     private static DatabaseConnection instance;

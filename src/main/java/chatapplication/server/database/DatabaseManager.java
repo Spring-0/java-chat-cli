@@ -2,9 +2,7 @@ package chatapplication.server.database;
 
 import chatapplication.common.models.GroupChat;
 import chatapplication.common.models.User;
-import chatapplication.server.networking.RequestHandler;
 
-import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
