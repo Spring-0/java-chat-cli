@@ -1,10 +1,10 @@
-package chatapplication.common.constants;
+package chatapplication.common;
 
-import chatapplication.common.constants.util.IoUtil;
+import chatapplication.common.constants.ChatRoomType;
+import chatapplication.util.IoUtil;
 import chatapplication.common.models.Chat;
 import chatapplication.common.models.GroupChat;
 import chatapplication.common.models.User;
-import chatapplication.server.ChatRoomType;
 import chatapplication.server.database.DatabaseManager;
 
 import java.io.BufferedReader;

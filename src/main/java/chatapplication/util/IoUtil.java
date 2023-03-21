@@ -1,4 +1,4 @@
-package chatapplication.common.constants.util;
+package chatapplication.util;
 
 import chatapplication.common.models.GroupChat;
 
@@ -37,7 +37,4 @@ public class IoUtil {
         out.println("Welcome to Spring's chat application!");
     }
 
-    public void displayRegisterScreen(){
-        out.println("Please register.");
-    }
 }

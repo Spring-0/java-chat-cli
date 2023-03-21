@@ -1,4 +1,4 @@
-package chatapplication.server;
+package chatapplication.common.constants;
 
 public enum ChatRoomType {
     GLOBAL,
