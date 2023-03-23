@@ -7,6 +7,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/*
+ * Provides methods for accessing and mutating data in database
+ */
 public class DatabaseManager {
 
     private ArrayList<GroupChat> groupChats;
@@ -33,8 +36,10 @@ public class DatabaseManager {
             ps.setString(1, username.toLowerCase());
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
+                ps.close();
                 return true;
             }
+            ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -47,6 +52,7 @@ public class DatabaseManager {
         try{
             // TODO: Encrypt passwords
             STMT.execute(String.format("INSERT INTO Users(username, password) VALUES('%s', '%s')", user.getUsername().toLowerCase(), user.getPasswd()));
+            STMT.close();
         } catch (SQLException e){
             System.out.println("There was an error adding user: " + user.getUserID() + " to the database.");
             e.printStackTrace();
@@ -80,6 +86,7 @@ public class DatabaseManager {
                         preparedStatement.executeUpdate();
                     }
                 }
+                preparedStatement.close();
             }catch (SQLException e){
                 e.printStackTrace();
             }
@@ -95,6 +102,7 @@ public class DatabaseManager {
             preparedStatement.setInt(2, groupChat.getGroupID());
             System.out.println(groupChat.getGroupID());
             preparedStatement.executeUpdate();
+            preparedStatement.close();
 
         } catch (SQLException e){
             e.printStackTrace();
@@ -126,6 +134,7 @@ public class DatabaseManager {
                     receivers.add(User.getUserByUsername(username));
                 }
 
+                preparedStatement1.close();
                 resultSet1.close();
 
                 if(!groupChatIDs.contains(groupID)){
@@ -140,6 +149,7 @@ public class DatabaseManager {
 
             }
             resultSet.close();
+            preparedStatement.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -156,6 +166,7 @@ public class DatabaseManager {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, passwd);
             ResultSet resultSet = preparedStatement.executeQuery();
+            preparedStatement.close();
             return resultSet.next();
         } catch (SQLException e){
             e.printStackTrace();
@@ -170,7 +181,7 @@ public class DatabaseManager {
             PreparedStatement preparedStatement = DB_CONNECTION.prepareStatement(sql);
             preparedStatement.setString(1, username.toLowerCase());
             ResultSet resultSet = preparedStatement.executeQuery();
-
+            preparedStatement.close();
             if(resultSet.next()){
                 return resultSet.getInt("user_id");
             }
@@ -187,6 +198,7 @@ public class DatabaseManager {
         try{
             final String UPDATE = "Update users SET username = '%s' WHERE username = '%s'";
             STMT.execute(String.format(UPDATE, newUsername, username));
+            STMT.close();
         } catch(SQLException e){
             e.printStackTrace();
         }
@@ -197,6 +209,7 @@ public class DatabaseManager {
         try {
             final String UPDATE = "UPDATE users SET password = '%s' WHERE username = '%s'";
             STMT.execute(String.format(UPDATE, passwd, username));
+            STMT.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
