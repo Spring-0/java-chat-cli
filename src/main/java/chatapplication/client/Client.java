@@ -37,20 +37,42 @@ public class Client implements Runnable{
 
         } catch (IOException e) {
             System.out.println("There was an error connecting to the server, please ensure the server is online.");
-            // throw new RuntimeException(e);
+        } finally {
+            closeResources();
         }
     }
-    class InputHandler implements Runnable{
 
+    private void closeResources() {
+        try {
+            if (in != null) {
+                in.close();
+            }
+            if (out != null) {
+                out.close();
+            }
+            if (client != null) {
+                client.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    class InputHandler implements Runnable {
         @Override
         public void run() {
             Scanner inScanner = new Scanner(System.in);
-            while(!done){
-                sendMessage(inScanner.nextLine());
+            while (!done) {
+                String userInput = inScanner.nextLine();
+                sendMessage(userInput);
+                if (userInput.equalsIgnoreCase("/quit")) {
+                    done = true;
+                    closeResources();
+                    return;
+                }
             }
         }
     }
-
 
     public static void main(String[] args) {
         Client client = new Client();
