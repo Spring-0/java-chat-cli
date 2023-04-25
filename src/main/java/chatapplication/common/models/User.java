@@ -1,6 +1,6 @@
 package chatapplication.common.models;
 
-import chatapplication.server.ChatRoomType;
+import chatapplication.common.constants.ChatRoomType;
 import chatapplication.server.networking.RequestHandler;
 
 import java.net.Socket;

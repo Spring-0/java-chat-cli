@@ -1,16 +1,17 @@
 package chatapplication.server.networking;
 
-import chatapplication.common.constants.Commands;
-import chatapplication.common.constants.util.IoUtil;
+import chatapplication.common.Commands;
+import chatapplication.util.IoUtil;
 import chatapplication.common.models.GroupChat;
 import chatapplication.common.models.User;
-import chatapplication.server.ChatRoomType;
+import chatapplication.common.constants.ChatRoomType;
 import chatapplication.server.database.DatabaseManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 /*
@@ -110,19 +111,23 @@ public class RequestHandler implements Runnable{
 
             broadcast(USER.getUsername() + " has joined the chat application!");
 
-            while((userInput = in.readLine()) != null) {
+            try {
+                while ((userInput = in.readLine()) != null) {
 
-                if(!userInput.startsWith("/")){
+                    if (!userInput.startsWith("/")) {
 
-                    if(USER.getChatRoomType() == ChatRoomType.GROUP_CHAT){
-                        GroupChat currentGroupChat = USER.getCurrentGroupChat();
-                        currentGroupChat.broadcast(USER, userInput);
-                    } else if (USER.getChatRoomType() == ChatRoomType.GLOBAL) {
-                        broadcast(String.format("[Global] %s: %s", USER.getUsername(), userInput));
+                        if (USER.getChatRoomType() == ChatRoomType.GROUP_CHAT) {
+                            GroupChat currentGroupChat = USER.getCurrentGroupChat();
+                            currentGroupChat.broadcast(USER, userInput);
+                        } else if (USER.getChatRoomType() == ChatRoomType.GLOBAL) {
+                            broadcast(String.format("[Global] %s: %s", USER.getUsername(), userInput));
+                        }
+                    } else {
+                        commands.callCommand(userInput);
                     }
-                } else{
-                    commands.callCommand(userInput);
+
                 }
+            } catch (SocketException e){
 
             }
 

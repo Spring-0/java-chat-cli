@@ -233,7 +233,11 @@ public class Commands {
     }
 
     private void quit(){
-        // TODO: Disconnect from the server, and leave application
+        try {
+            USER.getSocket().close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void sendPrivateMessage(User user, String message){

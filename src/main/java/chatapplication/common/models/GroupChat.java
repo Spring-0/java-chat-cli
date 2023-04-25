@@ -1,6 +1,6 @@
 package chatapplication.common.models;
 
-import chatapplication.server.ChatRoomType;
+import chatapplication.common.constants.ChatRoomType;
 
 import java.util.ArrayList;
 
@@ -47,6 +47,7 @@ public class GroupChat extends Chat {
 
     public void kickUser(User user){
         user.getGroupChats().remove(this); // Remove them from the group
+        receivers.remove(user);
         user.setChatRoomType(ChatRoomType.GLOBAL); // Automatically put them in global chat
         user.getHandler().sendMessage("You have been kicked from the " + this.groupName + " chat.");
     }

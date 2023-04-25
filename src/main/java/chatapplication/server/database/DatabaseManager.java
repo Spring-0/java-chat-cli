@@ -174,20 +174,24 @@ public class DatabaseManager {
         return false;
     }
 
-    public int getUserID(String username){
-        try{
-
+    public int getUserID(String username) {
+        try {
             String sql = "SELECT * FROM Users WHERE username = ?";
             PreparedStatement preparedStatement = DB_CONNECTION.prepareStatement(sql);
             preparedStatement.setString(1, username.toLowerCase());
             ResultSet resultSet = preparedStatement.executeQuery();
-            preparedStatement.close();
-            if(resultSet.next()){
-                return resultSet.getInt("user_id");
+
+            int userId = 0;
+            if (resultSet.next()) {
+                userId = resultSet.getInt("user_id");
             }
 
+            resultSet.close();
+            preparedStatement.close();
 
-        } catch (SQLException e){
+            return userId;
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return 0;
